@@ -67,7 +67,7 @@ banner()
     (_/       .-/              /     
              (_/                     
                                      ${ResetColor}${bold}
-	IDR Agent + Enhanced logs v4.0.8
+	IDR Agent + Enhanced logs v4.0.9
 	Git: https://github.com/esmeraldino-lk/Rapid7LinuxAutoInstall
 	Created by: 𝐿𝑢𝑐𝑎𝑠 𝐸𝑠𝑚𝑒𝑟𝑎𝑙𝑑𝑖𝑛𝑜${CyanColor}${bold}
 	\xF0\x9F\x94\x91 Hash: ${hashFile}
@@ -171,7 +171,7 @@ installAgent()
 					apt install $agentPath
 					debOSConfigure
 					writeLogChecked $agentInstalled
-				elif [[ $linuxVersion == *"CentOS"* ]]; then
+				elif [[ $linuxVersion == *"CentOS"* ]] || [[ $linuxVersion == *"Oracle"* ]]; then
 					writeLogProgress Downloading .rpm package
 				    wget https://us3.storage.endpoint.ingress.rapid7.com/public.razor-prod-6.us-west-2.insight.rapid7.com/endpoint/agent/1718655850/linux/x86_64/rapid7-insight-agent-4.0.9.38-1.x86_64.rpm --progress=bar:force -P ./
 					rpm -i $agentPath
@@ -188,7 +188,7 @@ installAgent()
 					apt install $agentPath
 					debOSConfigure
 					writeLogChecked $agentInstalled
-				elif [[ $linuxVersion == *"CentOS"* ]]; then
+				elif [[ $linuxVersion == *"CentOS"* ]] || [[ $linuxVersion == *"Oracle"* ]]; then
 					writeLogProgress Downloading .rpm package
 				    wget https://us3.storage.endpoint.ingress.rapid7.com/public.razor-prod-6.us-west-2.insight.rapid7.com/endpoint/agent/1718655850/linux/arm64/rapid7-insight-agent-4.0.9.38-1.aarch64.rpm --progress=bar:force -P ./
 					rpm -i $agentPath
