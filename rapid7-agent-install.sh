@@ -32,6 +32,9 @@ audispdConfigure="Audispd Configuration"
 hashFile="$(md5sum -b "$0" | sed 's/\*.\/rapid7-agent-install.sh//' | sed 's/*rapid7-agent-install.sh//' )"
 linuxVersion="$(cat /etc/os-release | grep NAME | sed 's/NAME="//' | sed 's/"//' | sed 's/PRETTY_//g' | sed 's/ GNU*.*//g' | head -1)"
 agentPath="./rapid7-insight-agent_4.0.9.38-1_amd64.deb"
+agentPathRPM="./rapid7-insight-agent-4.0.9.38-1.x86_64.rpm"
+agentPath1="rapid7-insight-agent_4.0.9.38-1_amd64.deb"
+agentPath1RPM="rapid7-insight-agent-4.0.9.38-1.x86_64.rpm"
 certPath="/opt/rapid7/ir_agent/components/insight_agent/4.0.9.38/autoinstall.cert"
 
 
@@ -67,7 +70,7 @@ banner()
     (_/       .-/              /     
              (_/                     
                                      ${ResetColor}${bold}
-	IDR Agent + Enhanced logs v4.0.9
+	IDR Agent + Enhanced logs v4.0.13
 	Git: https://github.com/esmeraldino-lk/Rapid7LinuxAutoInstall
 	Created by: 𝐿𝑢𝑐𝑎𝑠 𝐸𝑠𝑚𝑒𝑟𝑎𝑙𝑑𝑖𝑛𝑜${CyanColor}${bold}
 	\xF0\x9F\x94\x91 Hash: ${hashFile}
@@ -144,6 +147,85 @@ debOSConfigure()
 	writeLogNotChecked "Deb Configure"
 }
 
+installWithDonwload()
+{
+	if [[ $(uname -m) == *"x86_64"* ]]; then
+				
+		writeLogProgress Processor: amd64
+		
+		if [[ $linuxVersion == *"Debian"* ]] || [[ $linuxVersion == *"Ubuntu"* ]]; then
+			writeLogProgress Downloading .deb package
+			wget https://us3.storage.endpoint.ingress.rapid7.com/public.razor-prod-6.us-west-2.insight.rapid7.com/endpoint/agent/1718655850/linux/x86_64/rapid7-insight-agent_4.0.9.38-1_amd64.deb --progress=bar:force -P ./
+			apt install $agentPath
+			debOSConfigure
+			writeLogChecked $agentInstalled
+		elif [[ $linuxVersion == *"CentOS"* ]] || [[ $linuxVersion == *"Oracle"* ]]; then
+			writeLogProgress Downloading .rpm package
+			wget https://us3.storage.endpoint.ingress.rapid7.com/public.razor-prod-6.us-west-2.insight.rapid7.com/endpoint/agent/1718655850/linux/x86_64/rapid7-insight-agent-4.0.9.38-1.x86_64.rpm --progress=bar:force -P ./
+			yum install $agentPathRPM -y
+			centOSConfigure
+			writeLogChecked $agentInstalled
+		fi
+		
+	elif [[ $(uname -m) == *"aarch64"* ]]; then
+
+		writeLogProgress Processor: arm64
+		if [[ $linuxVersion == *"Debian"* ]] || [[ $linuxVersion == *"Ubuntu"* ]]; then
+			writeLogProgress Downloading .deb package
+			wget https://us3.storage.endpoint.ingress.rapid7.com/public.razor-prod-6.us-west-2.insight.rapid7.com/endpoint/agent/1718655850/linux/arm64/rapid7-insight-agent_4.0.9.38-1_arm64.deb --progress=bar:force -P ./
+			apt install $agentPath
+			debOSConfigure
+			writeLogChecked $agentInstalled
+		elif [[ $linuxVersion == *"CentOS"* ]] || [[ $linuxVersion == *"Oracle"* ]]; then
+			writeLogProgress Downloading .rpm package
+			wget https://us3.storage.endpoint.ingress.rapid7.com/public.razor-prod-6.us-west-2.insight.rapid7.com/endpoint/agent/1718655850/linux/arm64/rapid7-insight-agent-4.0.9.38-1.aarch64.rpm --progress=bar:force -P ./
+			yum install $agentPathRPM -y
+			centOSConfigure
+			writeLogChecked $agentInstalled
+		fi
+	else
+		writeLogChecked AGENTERROR
+		exit
+	fi
+}
+install()
+{
+	if [[ $(uname -m) == *"x86_64"* ]]; then
+				
+		writeLogProgress Processor: amd64
+		
+		if [[ $linuxVersion == *"Debian"* ]] || [[ $linuxVersion == *"Ubuntu"* ]]; then
+			writeLogProgress Downloading .deb package
+			apt install $agentPath
+			debOSConfigure
+			writeLogChecked $agentInstalled
+		elif [[ $linuxVersion == *"CentOS"* ]] || [[ $linuxVersion == *"Oracle"* ]]; then
+			writeLogProgress Downloading .rpm package
+			yum install $agentPathRPM -y
+			centOSConfigure
+			writeLogChecked $agentInstalled
+		fi
+		
+	elif [[ $(uname -m) == *"aarch64"* ]]; then
+
+		writeLogProgress Processor: arm64
+		if [[ $linuxVersion == *"Debian"* ]] || [[ $linuxVersion == *"Ubuntu"* ]]; then
+			writeLogProgress Downloading .deb package
+			apt install $agentPath
+			debOSConfigure
+			writeLogChecked $agentInstalled
+		elif [[ $linuxVersion == *"CentOS"* ]] || [[ $linuxVersion == *"Oracle"* ]]; then
+			writeLogProgress Downloading .rpm package
+			yum install $agentPathRPM -y
+			centOSConfigure
+			writeLogChecked $agentInstalled
+		fi
+	else
+		writeLogChecked AGENTERROR
+		exit
+	fi
+}
+
 installAgent()
 {
 	if [[ -a "/opt/rapid7/ir_agent/ir_agent" && -a "$certPath" ]]; then
@@ -158,47 +240,11 @@ installAgent()
     else
 		writeLogNotChecked $agentInstalled
 		
-		if [ -a $agentPath ]; then
+		if [ -a $agentPath1 ] || [ -a $agentPath1RPM ]; then
 		    echo -e "${GreenColor}[!] Agent detected in folder${ResetColor}"
+			install
 		else
-		    if [[ $(uname -m) == *"x86_64"* ]]; then
-				
-				writeLogProgress Processor: amd64
-				
-				if [[ $linuxVersion == *"Debian"* ]] || [[ $linuxVersion == *"Ubuntu"* ]]; then
-					writeLogProgress Downloading .deb package
-				    wget https://us3.storage.endpoint.ingress.rapid7.com/public.razor-prod-6.us-west-2.insight.rapid7.com/endpoint/agent/1718655850/linux/x86_64/rapid7-insight-agent_4.0.9.38-1_amd64.deb --progress=bar:force -P ./
-					apt install $agentPath
-					debOSConfigure
-					writeLogChecked $agentInstalled
-				elif [[ $linuxVersion == *"CentOS"* ]] || [[ $linuxVersion == *"Oracle"* ]]; then
-					writeLogProgress Downloading .rpm package
-				    wget https://us3.storage.endpoint.ingress.rapid7.com/public.razor-prod-6.us-west-2.insight.rapid7.com/endpoint/agent/1718655850/linux/x86_64/rapid7-insight-agent-4.0.9.38-1.x86_64.rpm --progress=bar:force -P ./
-					rpm -i $agentPath
-					centOSConfigure
-					writeLogChecked $agentInstalled
-				fi
-				
-		    elif [[ $(uname -m) == *"aarch64"* ]]; then
-
-				writeLogProgress Processor: arm64
-				if [[ $linuxVersion == *"Debian"* ]] || [[ $linuxVersion == *"Ubuntu"* ]]; then
-					writeLogProgress Downloading .deb package
-				    wget https://us3.storage.endpoint.ingress.rapid7.com/public.razor-prod-6.us-west-2.insight.rapid7.com/endpoint/agent/1718655850/linux/arm64/rapid7-insight-agent_4.0.9.38-1_arm64.deb --progress=bar:force -P ./
-					apt install $agentPath
-					debOSConfigure
-					writeLogChecked $agentInstalled
-				elif [[ $linuxVersion == *"CentOS"* ]] || [[ $linuxVersion == *"Oracle"* ]]; then
-					writeLogProgress Downloading .rpm package
-				    wget https://us3.storage.endpoint.ingress.rapid7.com/public.razor-prod-6.us-west-2.insight.rapid7.com/endpoint/agent/1718655850/linux/arm64/rapid7-insight-agent-4.0.9.38-1.aarch64.rpm --progress=bar:force -P ./
-					rpm -i $agentPath
-					centOSConfigure
-					writeLogChecked $agentInstalled
-				fi
-			else
-				writeLogChecked AGENTERROR
-				exit
-			fi
+		    installWithDonwload
 			
 		fi
 		
