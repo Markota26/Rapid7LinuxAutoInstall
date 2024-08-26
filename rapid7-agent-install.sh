@@ -73,7 +73,7 @@ banner()
     (_/       .-/              /     
              (_/                     
                                      ${ResetColor}${bold}
-	IDR Agent + Enhanced logs v4.0.16
+	IDR Agent + Enhanced logs v4.0.18
 	Git: https://github.com/esmeraldino-lk/Rapid7LinuxAutoInstall
 	Created by: 𝐿𝑢𝑐𝑎𝑠 𝐸𝑠𝑚𝑒𝑟𝑎𝑙𝑑𝑖𝑛𝑜${CyanColor}${bold}
 	\xF0\x9F\x94\x91 Hash: ${hashFile}
@@ -164,7 +164,7 @@ installWithDonwload()
 			else
 				curl -L https://us3.storage.endpoint.ingress.rapid7.com/public.razor-prod-6.us-west-2.insight.rapid7.com/endpoint/agent/1718655850/linux/x86_64/rapid7-insight-agent_4.0.9.38-1_amd64.deb -O ./
 			fi
-			
+			apt remove rapid7-insight-agent -y
 			apt install $agentPath
 			debOSConfigure
 			writeLogChecked $agentInstalled
@@ -176,7 +176,7 @@ installWithDonwload()
 			else
 				curl -L https://us3.storage.endpoint.ingress.rapid7.com/public.razor-prod-6.us-west-2.insight.rapid7.com/endpoint/agent/1718655850/linux/x86_64/rapid7-insight-agent-4.0.9.38-1.x86_64.rpm -O ./
 			fi
-			
+			yum remove rapid7-insight-agent -y
 			yum install $agentPathRPM -y
 			centOSConfigure
 			writeLogChecked $agentInstalled
@@ -193,7 +193,7 @@ installWithDonwload()
 			else
 				curl -L https://us3.storage.endpoint.ingress.rapid7.com/public.razor-prod-6.us-west-2.insight.rapid7.com/endpoint/agent/1718655850/linux/arm64/rapid7-insight-agent_4.0.9.38-1_arm64.deb -O ./
 			fi
-
+			apt remove rapid7-insight-agent -y
 			apt install $agentPath
 			debOSConfigure
 			writeLogChecked $agentInstalled
@@ -205,7 +205,7 @@ installWithDonwload()
 			else
 				curl -L https://us3.storage.endpoint.ingress.rapid7.com/public.razor-prod-6.us-west-2.insight.rapid7.com/endpoint/agent/1718655850/linux/arm64/rapid7-insight-agent-4.0.9.38-1.aarch64.rpm -O ./
 			fi
-			
+			yum remove rapid7-insight-agent -y
 			yum install $agentPathRPM -y
 			centOSConfigure
 			writeLogChecked $agentInstalled
@@ -222,7 +222,7 @@ installWithDonwload()
 			else
 				curl -L https://us3.storage.endpoint.ingress.rapid7.com/public.razor-prod-6.us-west-2.insight.rapid7.com/endpoint/agent/1718655850/linux/arm64/rapid7-insight-agent-4.0.9.38-1.aarch64.rpm -O ./
 			fi
-			
+			apt remove rapid7-insight-agent -y
 			apt install $agentPath
 			debOSConfigure
 			writeLogChecked $agentInstalled
@@ -234,7 +234,7 @@ installWithDonwload()
 			else
 				curl -L https://us3.storage.endpoint.ingress.rapid7.com/public.razor-prod-6.us-west-2.insight.rapid7.com/endpoint/agent/1718655850/linux/arm64/rapid7-insight-agent-4.0.9.38-1.aarch64.rpm -O ./
 			fi
-			
+			yum remove rapid7-insight-agent -y
 			yum install $agentPathRPM -y
 			centOSConfigure
 			writeLogChecked $agentInstalled
@@ -252,11 +252,13 @@ install()
 		
 		if [[ $linuxVersion == *"Debian"* ]] || [[ $linuxVersion == *"Ubuntu"* ]]; then
 			writeLogProgress Downloading .deb package
+			apt remove rapid7-insight-agent -y
 			apt install $agentPath
 			debOSConfigure
 			writeLogChecked $agentInstalled
 		elif [[ $linuxVersion == *"CentOS"* ]] || [[ $linuxVersion == *"Oracle"* ]] || [[ $linuxVersion == *"Enterprise Linux"* ]]; then
 			writeLogProgress Downloading .rpm package
+			yum remove rapid7-insight-agent -y
 			yum install $agentPathRPM -y
 			centOSConfigure
 			writeLogChecked $agentInstalled
@@ -267,11 +269,13 @@ install()
 		writeLogProgress Processor: arm64
 		if [[ $linuxVersion == *"Debian"* ]] || [[ $linuxVersion == *"Ubuntu"* ]]; then
 			writeLogProgress Downloading .deb package
+			apt remove rapid7-insight-agent -y
 			apt install $agentPath
 			debOSConfigure
 			writeLogChecked $agentInstalled
 		elif [[ $linuxVersion == *"CentOS"* ]] || [[ $linuxVersion == *"Oracle"* ]] || [[ $linuxVersion == *"Enterprise Linux"* ]]; then
 			writeLogProgress Downloading .rpm package
+			yum remove rapid7-insight-agent -y
 			yum install $agentPathRPM -y
 			centOSConfigure
 			writeLogChecked $agentInstalled
@@ -282,11 +286,13 @@ install()
 		
 		if [[ $linuxVersion == *"Debian"* ]] || [[ $linuxVersion == *"Ubuntu"* ]]; then
 			writeLogProgress Downloading .deb package
+			apt remove rapid7-insight-agent -y
 			apt install $agentPath
 			debOSConfigure
 			writeLogChecked $agentInstalled
 		elif [[ $linuxVersion == *"CentOS"* ]] || [[ $linuxVersion == *"Oracle"* ]] || [[ $linuxVersion == *"Enterprise Linux"* ]]; then
 			writeLogProgress Downloading .rpm package
+			yum remove rapid7-insight-agent -y
 			yum install $agentPathRPM -y
 			centOSConfigure
 			writeLogChecked $agentInstalled
@@ -654,8 +660,10 @@ configureAuditConf()
 
     service auditd stop 
     service auditd start
+	systemctl daemon-reload
 	systemctl restart ir_agent
 	systemctl restart auditd
+	
 
 	writeLogChecked $auditdConfConfigured "Lines: $(cat $auditConfPath | wc -l)"
 }
