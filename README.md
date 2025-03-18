@@ -25,10 +25,6 @@ Rapid7 agent installation with enrichment logs, audit.d installation and configu
 
 # 📝 How to use
 
-
-> [!IMPORTANT]
-> Only for Linux
-
 1. Download the script
 `git clone git@github.com:esmeraldino-lk/Rapid7LinuxAutoInstall.git`
 
