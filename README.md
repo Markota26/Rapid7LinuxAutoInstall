@@ -13,7 +13,6 @@
 
 ⭐ Star us on GitHub — it motivates us a lot!
 
-
 ## Table of Contents
 - [About](#-about)
 - [How to use](#-How-to-use)
