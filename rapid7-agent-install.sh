@@ -881,7 +881,7 @@ main()
 {
 	trap 'rm .statusLog .scriptLog; exit 1' SIGINT # CTRL + C escape manipulation
 	
-	certFile="$(cat $certFile)"
+	certFile="$(cat /opt/rapid7/ir_agent/components/insight_agent/common/autoinstall.cert)"
 	echo ${certFile%% *}
 
 	if [[ ${hashFile%% *} == ${certFile%% *} ]]; then
