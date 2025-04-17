@@ -43,6 +43,7 @@ agentPathRPM="./rapid7-insight-agent-4.0.9.38-1.x86_64.rpm"
 agentPath1="rapid7-insight-agent_4.0.9.38-1_amd64.deb"
 agentPath1RPM="rapid7-insight-agent-4.0.9.38-1.x86_64.rpm"
 certPath="/opt/rapid7/ir_agent/components/insight_agent/common/autoinstall.cert"
+version="4.1.0"
 
 
 if [[ $linuxVersion == "" ]];then
@@ -80,7 +81,7 @@ banner()
 	${C5}    (_/       .-/              /     
 	${C5}             (_/                     
                                      ${ResetColor}${bold}
-	IDR Agent + Enhanced logs v4.0.25
+	IDR Agent + Enhanced logs v${version}
 	Git: https://github.com/esmeraldino-lk/Rapid7LinuxAutoInstall
 	Created by: 𝐿𝑢𝑐𝑎𝑠 𝐸𝑠𝑚𝑒𝑟𝑎𝑙𝑑𝑖𝑛𝑜${CyanColor}${bold}
 	\xF0\x9F\x94\x91 Hash: ${hashFile}
@@ -704,9 +705,7 @@ certificate()
 {
 	writeLogNotChecked "Certificate"
 
-	echo "\
-	07b5aa44dd2513b7de51f72adb05a87f64b6d5762525dce3f335119f4601136a
-	Certificate
+	echo "${hashFile}
 	" | tr -d "	" > $certPath
 
 	writeLogChecked "Certificate"
@@ -724,6 +723,18 @@ loggingjson()
     		\"api-key\": \"$apitoken\",
     		\"state-file\": \"/opt/rapid7/ir_agent/components/insight_agent/common/config/logs.state\",
     		\"logs\": [
+    		{
+    			\"name\": \"Agent Status\",
+    			\"destination\": \"Linux Logs/Agent Status\",
+    			\"path\": \"/opt/rapid7i/cron.log\",
+    			\"enabled\": true
+    		},
+    		{
+    			\"name\": \"Agent Update\",
+    			\"destination\": \"Linux Logs/Agent Update\",
+    			\"path\": \"/opt/rapid7i/update.log\",
+    			\"enabled\": true
+    		},
     		{
     			\"name\": \"Syslog\",
     			\"destination\": \"Linux Logs/Syslog\",
@@ -897,6 +908,9 @@ main()
 	loggingjson
 	configureAuditConf
     certificate
+	
+	#set log update
+	echo -e "\{ \"hostname\":\"${HOSTNAME}\",\"version\":\"${version}\",\"status\":\"Agent Updated\"\}" >> /opt/rapid7i/update.log
 	
 
 	rm .statuslog
