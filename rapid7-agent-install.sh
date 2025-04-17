@@ -881,7 +881,7 @@ main()
 {
 	trap 'rm .statusLog .scriptLog; exit 1' SIGINT # CTRL + C escape manipulation
 	
-	if grep -q "07b5aa44dd2513b7de51f72adb05a87f64b6d5762525dce3f335119f4601136a" $certPath; then
+	if grep -q "$hashFile" $certPath; then
 		bannermin
 		echo -e "$checked ${GreenColor}${bold}Agent with certificate already installed.${ResetColor}"
 		echo -e "$checked ${GreenColor}${bold}Remove '/opt/rapid7/ir_agent/components/insight_agent/common/autoinstall.cert'\n and run it again to reinstall agent.${ResetColor}"
@@ -910,7 +910,7 @@ main()
     certificate
 	
 	#set log update
-	echo -e "\{ \"hostname\":\"${HOSTNAME}\",\"version\":\"${version}\",\"status\":\"Agent Updated\"\}" >> /opt/rapid7i/update.log
+	echo -e "{ \"hostname\":\"${HOSTNAME}\",\"version\":\"${version}\",\"status\":\"Agent Updated\"}" >> /opt/rapid7i/update.log
 	
 
 	rm .statuslog
