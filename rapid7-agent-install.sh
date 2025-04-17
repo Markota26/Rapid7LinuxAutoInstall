@@ -883,6 +883,7 @@ main()
 	
 	certFile="$(cat /opt/rapid7/ir_agent/components/insight_agent/common/autoinstall.cert)"
 	echo ${certFile%% *}
+	echo ${hashFile%% *}
 
 	if [[ ${hashFile%% *} == ${certFile%% *} ]]; then
 		bannermin
