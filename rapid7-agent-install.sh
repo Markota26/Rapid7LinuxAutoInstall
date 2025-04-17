@@ -881,10 +881,10 @@ main()
 {
 	trap 'rm .statusLog .scriptLog; exit 1' SIGINT # CTRL + C escape manipulation
 	
-	echo ${hashFile%% *}
-	echo ${certPath%% *}
+	certFile="$(cat $certFile)"
+	echo ${certFile%% *}
 
-	if [[ ${hashFile%% *} == ${certPath%% *} ]]; then
+	if [[ ${hashFile%% *} == ${certFile%% *} ]]; then
 		bannermin
 		echo -e "$checked ${GreenColor}${bold}Agent with certificate already installed.${ResetColor}"
 		echo -e "$checked ${GreenColor}${bold}Remove '/opt/rapid7/ir_agent/components/insight_agent/common/autoinstall.cert'\n and run it again to reinstall agent.${ResetColor}"
