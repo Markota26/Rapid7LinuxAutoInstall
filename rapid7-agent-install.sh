@@ -890,6 +890,7 @@ main()
 		echo -e "$checked ${GreenColor}${bold}Remove '/opt/rapid7/ir_agent/components/insight_agent/common/autoinstall.cert'\n and run it again to reinstall agent.${ResetColor}"
 		exit 1
 	fi
+	exit 1
 
 	if [[ -z $apitoken ]]; then
 		banner
