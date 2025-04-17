@@ -881,6 +881,9 @@ main()
 {
 	trap 'rm .statusLog .scriptLog; exit 1' SIGINT # CTRL + C escape manipulation
 	
+	echo ${hashFile%% *}
+	echo ${certPath%% *}
+
 	if [[ ${hashFile%% *} == ${certPath%% *} ]]; then
 		bannermin
 		echo -e "$checked ${GreenColor}${bold}Agent with certificate already installed.${ResetColor}"
