@@ -1,6 +1,6 @@
 #!/bin/bash
 #Created by Lucas Esmeraldino
-#27-06-2024
+#17-04-2025
 
 #Colors
 RedColor='\033[0;31m'
@@ -13,8 +13,15 @@ WhiteColor='\033[0;37m'
 OrangeColor='\033[0;33m'
 ResetColor='\033[0m'
 bold='\033[1m'
+C1='\033[38;5;220m'  # amarelo-laranja
+C2='\033[38;5;214m'  # laranja claro
+C3='\033[38;5;208m'  # laranja médio
+C4='\033[38;5;202m'  # laranja escuro
+C5='\033[38;5;196m'  # vermelho alaranjado
 
 tokenPar="$1"
+regionVar="$2"
+apitoken="$3"
 scriptLog=".scriptlog"
 statusLog=".statuslog"
 checked="${GreenColor}${bold}[\xE2\x9C\x93]${normal}"
@@ -35,7 +42,7 @@ agentPath="./rapid7-insight-agent_4.0.9.38-1_amd64.deb"
 agentPathRPM="./rapid7-insight-agent-4.0.9.38-1.x86_64.rpm"
 agentPath1="rapid7-insight-agent_4.0.9.38-1_amd64.deb"
 agentPath1RPM="rapid7-insight-agent-4.0.9.38-1.x86_64.rpm"
-certPath="/opt/rapid7/ir_agent/components/insight_agent/4.0.9.38/autoinstall.cert"
+certPath="/opt/rapid7/ir_agent/components/insight_agent/common/autoinstall.cert"
 
 
 if [[ $linuxVersion == "" ]];then
@@ -66,20 +73,46 @@ banner()
 {
 	echo -e "\
 	${RedColor}${bold}
-       _____                   ___   
-      (, /   )         ,   /) /   /  
-        /__ / _  __      _(/     /   
-     ) /   \_(_(_/_)__(_(_(_    /    
-    (_/       .-/              /     
-             (_/                     
+	${C1}       _____                   ___   
+	${C2}      (, /   )         ,   /) /   /  
+	${C3}        /__ / _  __      _(/     /   
+	${C4}     ) /   \_(_(_/_)__(_(_(_    /    
+	${C5}    (_/       .-/              /     
+	${C5}             (_/                     
                                      ${ResetColor}${bold}
-	IDR Agent + Enhanced logs v4.0.18
+	IDR Agent + Enhanced logs v4.0.25
 	Git: https://github.com/esmeraldino-lk/Rapid7LinuxAutoInstall
 	Created by: 𝐿𝑢𝑐𝑎𝑠 𝐸𝑠𝑚𝑒𝑟𝑎𝑙𝑑𝑖𝑛𝑜${CyanColor}${bold}
 	\xF0\x9F\x94\x91 Hash: ${hashFile}
 	\xF0\x9F\x90\xA7 Version: ${linuxVersion}
 	Hostname: $(hostname)
-	Token: ${tokenPar}${bold}${ResetColor}
+	Token: ${tokenPar}
+	Region: ${regionVar}
+	API-Key: ${apitoken}${bold}${ResetColor}
+	" | tr -d "	"
+}
+
+bannermin()
+{
+	echo -e "\
+	${RedColor}${bold}
+	${C1}       _____                   ___   
+	${C2}      (, /   )         ,   /) /   /  
+	${C3}        /__ / _  __      _(/     /   
+	${C4}     ) /   \_(_(_/_)__(_(_(_    /    
+	${C5}    (_/       .-/              /     
+	${C5}             (_/                     
+                                     ${ResetColor}${bold}
+	IDR Agent + Enhanced logs v4.0.25
+	Git: https://github.com/esmeraldino-lk/Rapid7LinuxAutoInstall
+	Created by: 𝐿𝑢𝑐𝑎𝑠 𝐸𝑠𝑚𝑒𝑟𝑎𝑙𝑑𝑖𝑛𝑜${CyanColor}${bold}
+	\xF0\x9F\x94\x91 Hash: ${hashFile}
+	\xF0\x9F\x90\xA7 Version: ${linuxVersion}
+	Hostname: $(hostname)
+	AuditConf Lines: $(cat /opt/rapid7/ir_agent/components/insight_agent/common/audit.conf | wc -l)
+	Auditd Rules: $(cat /etc/audit/rules.d/audit.rules | wc -l)
+	AfUnix Lines: $(cat '/etc/audit/plugins.d/af_unix.conf' | wc -l)
+	Logging Json: $(cat '/opt/rapid7/ir_agent/components/insight_agent/common/config/logging.json' | wc -l)
 	" | tr -d "	"
 }
 
@@ -679,15 +712,180 @@ certificate()
 	writeLogChecked "Certificate"
 }
 
+loggingjson()
+{
+	
+    loggingfile=$(echo "\
+    {
+    \"config\": {
+    		\"name\": \"Linux Agent\",
+    		\"endpoint\": \"$regionVar.data.logs.insight.rapid7.com\",
+    		\"region\": \"$regionVar\",
+    		\"api-key\": \"$apitoken\",
+    		\"state-file\": \"/opt/rapid7/ir_agent/components/insight_agent/common/config/logs.state\",
+    		\"logs\": [
+    		{
+    			\"name\": \"Syslog\",
+    			\"destination\": \"Linux Logs/Syslog\",
+    			\"path\": \"/var/log/syslog\",
+    			\"enabled\": true
+    		},
+    		{
+    			\"name\": \"Audit log\",
+    			\"destination\": \"Linux Logs/audit.log\",
+    			\"path\": \"/var/log/audit/audit.log\",
+    			\"enabled\": true
+    		},
+    		{
+    			\"name\": \"Apache Access Log\",
+    			\"destination\": \"Linux Logs/Apache Access\",
+    			\"path\": \"/var/log/apache2/access.log\",
+    			\"enabled\": true
+    		},
+    		{
+    			\"name\": \"Nginx Access Log\",
+    			\"destination\": \"Linux Logs/Nginx Access\",
+    			\"path\": \"/var/log/nginx/access.log\",
+    			\"enabled\": true
+    		},
+    		{
+    			\"name\": \"Nginx Error Log\",
+    			\"destination\": \"Linux Logs/Nginx Error\",
+    			\"path\": \"/var/log/nginx/error.log\",
+    			\"enabled\": true
+    		},
+    		{
+    			\"name\": \"Apache Error Log\",
+    			\"destination\": \"Linux Logs/Apache Error\",
+    			\"path\": \"/var/log/apache2/error.log\",
+    			\"enabled\": true
+    		},
+    		{
+    			\"name\": \"Authentication Log Debian-based\",
+    			\"destination\": \"Linux Logs/Security/Authentication\",
+    			\"path\": \"/var/log/auth.log\",
+    			\"enabled\": true
+    		},
+    		{
+    			\"name\": \"Secure Log RedHat-based\",
+    			\"destination\": \"Linux Logs/Security/Authentication\",
+    			\"path\": \"/var/log/secure\",
+    			\"enabled\": true
+    		},
+    		{
+    			\"name\": \"System Log Debian-based\",
+    			\"destination\": \"Linux Logs/System/Core\",
+    			\"path\": \"/var/log/syslog\",
+    			\"enabled\": true
+    		},
+    		{
+    			\"name\": \"System Log RedHat-based\",
+    			\"destination\": \"Linux Logs/System/Core\",
+    			\"path\": \"/var/log/messages\",
+    			\"enabled\": true
+    		},
+    		{
+    			\"name\": \"Kernel Log\",
+    			\"destination\": \"Linux Logs/System/Kernel\",
+    			\"path\": \"/var/log/kern.log\",
+    			\"enabled\": true
+    		},
+    		{
+    			\"name\": \"Boot Log\",
+    			\"destination\": \"Linux Logs/System/Boot\",
+    			\"path\": \"/var/log/boot.log\",
+    			\"enabled\": true
+    		},
+    		{
+    			\"name\": \"Systemd Journal\",
+    			\"destination\": \"Linux Logs/System/Systemd\",
+    			\"path\": \"/var/log/journal/\",
+    			\"enabled\": true
+    		},
+    		{
+    			\"name\": \"Login History wtmp\",
+    			\"destination\": \"Linux Logs/User/Access\",
+    			\"path\": \"/var/log/wtmp\",
+    			\"enabled\": true
+    		},
+    		{
+    			\"name\": \"Failed Login Attempts btmp\",
+    			\"destination\": \"Linux Logs/User/Access\",
+    			\"path\": \"/var/log/btmp\",
+    			\"enabled\": true
+    		},
+    		{
+    			\"name\": \"Last Login Records\",
+    			\"destination\": \"Linux Logs/User/Access\",
+    			\"path\": \"/var/log/lastlog\",
+    			\"enabled\": true
+    		},
+    		{
+    			\"name\": \"Root Bash History\",
+    			\"destination\": \"Linux Logs/User/Commands\",
+    			\"path\": \"/home/root/.bash_history\",
+    			\"enabled\": true
+    		},
+    		{
+    			\"name\": \"APT History Log\",
+    			\"destination\": \"Linux Logs/Packages/APT\",
+    			\"path\": \"/var/log/apt/history.log\",
+    			\"enabled\": true
+    		},
+    		{
+    			\"name\": \"APT Terminal Log\",
+    			\"destination\": \"Linux Logs/Packages/APT\",
+    			\"path\": \"/var/log/apt/term.log\",
+    			\"enabled\": true
+    		},
+    		{
+    			\"name\": \"YUM Log\",
+    			\"destination\": \"Linux Logs/Packages/YUM\",
+    			\"path\": \"/var/log/yum.log\",
+    			\"enabled\": true
+    		},
+    		{
+    			\"name\": \"Mail Log\",
+    			\"destination\": \"Linux Logs/Services/Mail\",
+    			\"path\": \"/var/log/mail.log\",
+    			\"enabled\": true
+    		},
+    		{
+    			\"name\": \"Mail Log RedHat-based\",
+    			\"destination\": \"Linux Logs/Services/Mail\",
+    			\"path\": \"/var/log/maillog\",
+    			\"enabled\": true
+    		}
+    		]
+    	}
+    }
+    ")
+
+	echo "$loggingfile"| tr -d "    " > "/opt/rapid7/ir_agent/components/insight_agent/common/config/logging.json"
+
+	writeLogChecked "Logging.json"
+}
+
 main()
 {
-	trap 'rm .statusLog .scriptLog; exit 1' SIGINT # CTRL + C escape manipulation	
-	if [[ -z $tokenPar ]]; then
-		banner
-		echo -e "$errorCheck Usage: $0 <token>"
-		echo -e "$errorCheck Token: $1"
+	trap 'rm .statusLog .scriptLog; exit 1' SIGINT # CTRL + C escape manipulation
+	
+	if grep -q "07b5aa44dd2513b7de51f72adb05a87f64b6d5762525dce3f335119f4601136a" $certPath; then
+		bannermin
+		echo -e "$checked ${GreenColor}${bold}Agent with certificate already installed.${ResetColor}"
+		echo -e "$checked ${GreenColor}${bold}Remove '/opt/rapid7/ir_agent/components/insight_agent/common/autoinstall.cert'\n and run it again to reinstall agent.${ResetColor}"
 		exit 1
 	fi
+
+	if [[ -z $apitoken ]]; then
+		banner
+		echo -e "$errorCheck Usage: $0 <token> <region> <api-key>"
+		echo -e "$errorCheck Token: $1"
+		echo -e "$errorCheck Region: $2"
+		echo -e "$errorCheck Api-key: $3"
+		exit 1
+	fi
+	
 
 	banner
     sudoCheck
@@ -696,11 +894,14 @@ main()
     installAgent
     auditRules
     configureAfunix
+	loggingjson
 	configureAuditConf
     certificate
+	
 
 	rm .statuslog
 	echo -e "$checked ${GreenColor}${bold}Success!${ResetColor}"
 
 }
+
 main
