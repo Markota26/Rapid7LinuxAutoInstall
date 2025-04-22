@@ -882,8 +882,6 @@ main()
 	trap 'rm .statusLog .scriptLog; exit 1' SIGINT # CTRL + C escape manipulation
 	
 	certFile="$(cat /opt/rapid7/ir_agent/components/insight_agent/common/autoinstall.cert)"
-	echo ${certFile%% *}
-	echo ${hashFile%% *}
 
 	if [[ ${hashFile%% *} == ${certFile%% *} ]]; then
 		bannermin
@@ -914,7 +912,7 @@ main()
     certificate
 	
 	#set log update
-	echo -e "{ \"hostname\":\"${HOSTNAME}\",\"version\":\"${version}\",\"status\":\"Agent Updated\"}" >> /opt/rapid7i/update.log
+	echo -e "{\"date\":\"$DATE\",\"hostname\":\"${HOSTNAME}\",\"version\":\"${version}\",\"Content\":[\"audit.conf\":\"$(cat $auditConfPath | wc -l)\",\"af_unix.conf\":\"$(cat '/etc/audit/plugins.d/af_unix.conf' | wc -l)\",\"auditd\":\"$(cat $auditRulePath | wc -l)\",\"logging.json\":\"$(cat '/opt/rapid7/ir_agent/components/insight_agent/common/config/logging.json' | wc -l)\"],\"status\":\"Agent Updated\"}" >> /opt/rapid7i/update.log
 	
 
 	rm .statuslog
