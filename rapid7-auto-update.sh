@@ -5,7 +5,7 @@ SCRIPT="/opt/rapid7i/rapid7install.sh"
 HOSTNAME=$(hostname)
 DATE=$(date '+%d/%m/%Y %H:%M:%S')
 CRONTAB=$(crontab -l)
-CRON_HORARIO="0 7 * * *"
+CRON_HORARIO="1 * * * *"
 CRON_CMD="$CRON_HORARIO bash /opt/rapid7i/rapid7rotine.sh"
 ROTINECOMMAND="bash /opt/rapid7i/rapid7i.sh"
 OSVERSION="$(cat /etc/os-release | grep NAME | sed 's/NAME="//' | sed 's/"//' | sed 's/PRETTY_//g' | sed 's/ GNU*.*//g' | head -1)"
