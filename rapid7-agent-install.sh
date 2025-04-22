@@ -887,6 +887,8 @@ main()
 		bannermin
 		echo -e "$checked ${GreenColor}${bold}Agent with certificate already installed.${ResetColor}"
 		echo -e "$checked ${GreenColor}${bold}Remove '/opt/rapid7/ir_agent/components/insight_agent/common/autoinstall.cert'\n and run it again to reinstall agent.${ResetColor}"
+		#set log update
+		echo -e "{\"date\":\"$DATE\",\"hostname\":\"${HOSTNAME}\",\"version\":\"${version}\",\"Content\":[\"audit.conf\":\"$(cat $auditConfPath | wc -l)\",\"af_unix.conf\":\"$(cat '/etc/audit/plugins.d/af_unix.conf' | wc -l)\",\"auditd\":\"$(cat $auditRulePath | wc -l)\",\"logging.json\":\"$(cat '/opt/rapid7/ir_agent/components/insight_agent/common/config/logging.json' | wc -l)\"],\"status\":\"Last version detected\"}" >> /opt/rapid7i/update.log
 		exit 1
 	fi
 
