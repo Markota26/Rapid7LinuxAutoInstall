@@ -43,7 +43,7 @@ agentPathRPM="./rapid7-insight-agent-4.0.9.38-1.x86_64.rpm"
 agentPath1="rapid7-insight-agent_4.0.9.38-1_amd64.deb"
 agentPath1RPM="rapid7-insight-agent-4.0.9.38-1.x86_64.rpm"
 certPath="/opt/rapid7/ir_agent/components/insight_agent/common/autoinstall.cert"
-version="4.1.0"
+version="4.1.7"
 
 
 if [[ $linuxVersion == "" ]];then
