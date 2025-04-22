@@ -1,6 +1,6 @@
 #!/bin/bash
 #Created by Lucas Esmeraldino
-#17-04-2025
+#22-04-2025
 
 #Colors
 RedColor='\033[0;31m'
@@ -44,7 +44,9 @@ agentPath1="rapid7-insight-agent_4.0.9.38-1_amd64.deb"
 agentPath1RPM="rapid7-insight-agent-4.0.9.38-1.x86_64.rpm"
 certPath="/opt/rapid7/ir_agent/components/insight_agent/common/autoinstall.cert"
 version="4.1.8"
-
+auditRulePath="/etc/audit/rules.d/audit.rules"
+auditRulePath2="/etc/audit/audit.rules"
+auditConfPath="/opt/rapid7/ir_agent/components/insight_agent/common/audit.conf"
 
 if [[ $linuxVersion == "" ]];then
 	linuxVersion="$(cat /etc/issue | head -1)"
@@ -367,8 +369,6 @@ auditRules()
 	#write log
 	writeLogNotChecked $auditdRuleConfigured
 
-	auditRulePath="/etc/audit/rules.d/audit.rules"
-	auditRulePath2="/etc/audit/audit.rules"
 	mv $auditRulePath /etc/audit/rules.d/audit.rules.backup #rename previous file to backup
 	mv $auditRulePath2 /etc/audit/audit.rules.backup #rename previous file to backup
 
@@ -688,8 +688,6 @@ configureAfunix()
 configureAuditConf()
 {
 	writeLogNotChecked $auditdConfConfigured
-
-	auditConfPath="/opt/rapid7/ir_agent/components/insight_agent/common/audit.conf"
 	echo '{"auditd-compatibility-mode":true}' > $auditConfPath
 
     service auditd stop 
