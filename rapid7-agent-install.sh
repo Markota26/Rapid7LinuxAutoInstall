@@ -47,6 +47,7 @@ version="4.1.8"
 auditRulePath="/etc/audit/rules.d/audit.rules"
 auditRulePath2="/etc/audit/audit.rules"
 auditConfPath="/opt/rapid7/ir_agent/components/insight_agent/common/audit.conf"
+DATE=$(date '+%d/%m/%Y %H:%M:%S')
 
 if [[ $linuxVersion == "" ]];then
 	linuxVersion="$(cat /etc/issue | head -1)"
