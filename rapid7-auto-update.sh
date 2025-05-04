@@ -1,4 +1,5 @@
 #!/bin/bash
+#created by lucas esmeraldino
 
 URL="https://raw.githubusercontent.com/esmeraldino-lk/Rapid7LinuxAutoInstall/refs/heads/main/rapid7-agent-install.sh"
 SCRIPT="/opt/rapid7i/rapid7install.sh"
