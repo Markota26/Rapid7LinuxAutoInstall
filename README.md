@@ -10,6 +10,7 @@
 [![Share](https://img.shields.io/badge/share-FF4500?logo=reddit&logoColor=white)](https://www.reddit.com/submit?title=Check%20out%20this%20project%20on%20GitHub:%20https://github.com/esmeraldino-lk/Rapid7LinuxAutoInstall)
 [![Share](https://img.shields.io/badge/share-0088CC?logo=telegram&logoColor=white)](https://t.me/share/url?url=https://github.com/esmeraldino-lk/Rapid7LinuxAutoInstall&text=Check%20out%20this%20project%20on%20GitHub)
 
+![image](https://github.com/user-attachments/assets/21b419fa-02a6-418d-a3c2-0d1852cb8f6a)
 
 ⭐ Star us on GitHub — it motivates us a lot!
 
